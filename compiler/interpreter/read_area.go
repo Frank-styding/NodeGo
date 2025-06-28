@@ -3,6 +3,9 @@ package interpreter
 func readArea(text string, i *int, limit string) (value string) {
 	value = ""
 	c := get(text, i)
+	for get(text, i) == '\n' {
+		advance(i)
+	}
 	if c != limit[0] {
 		return
 	}
@@ -13,7 +16,7 @@ func readArea(text string, i *int, limit string) (value string) {
 			return
 		}
 		if c == limit[1] {
-			advance(i)
+			/* advance(i) */
 			return
 		}
 		value += getS(text, i)

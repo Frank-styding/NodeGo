@@ -21,3 +21,7 @@ func endLine(text string, i *int) bool {
 func advance(i *int) {
 	(*i)++
 }
+
+func back(i *int) {
+	(*i)--
+}

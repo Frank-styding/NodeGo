@@ -22,6 +22,7 @@ func (wr *WireController) Add(names ...string) {
 }
 
 func (wr *WireController) Set(name string, value int) {
+	wr.Add(name)
 	if wire, exists := wr.Wires[name]; exists {
 		wire.Value = value
 	}

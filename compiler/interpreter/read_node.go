@@ -1,12 +1,16 @@
 package interpreter
 
 type NodeInfo struct {
-	name        string
-	connections []GateConnection
-	wires       []string
+	Name        string
+	Connections []GateConnection
+	InputsName  []string
+	OutputsName []string
 }
 
 func readNode(text string, i *int) (info NodeInfo, ok bool) {
+	for get(text, i) == '\n' {
+		advance(i)
+	}
 	if get(text, i) != '(' {
 		ok = false
 		return
@@ -15,14 +19,18 @@ func readNode(text string, i *int) (info NodeInfo, ok bool) {
 	contain := readArea(text, i, "{}")
 	k := 0
 	connections, ok := readConenctions(contain, &k)
-	if ok {
+	if !ok {
 		return
 	}
 	name := properties[0]
 	j := 0
-	wires := readArray(properties[1], &j, "[]", ",")
-	info.connections = connections
-	info.name = name
-	info.wires = wires
+	inputsName := readArray(properties[1], &j, "[]", ",")
+	j = 0
+	outputsName := readArray(properties[2], &j, "[]", ",")
+
+	info.Connections = connections
+	info.Name = name + "_"
+	info.InputsName = inputsName
+	info.OutputsName = outputsName
 	return
 }

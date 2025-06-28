@@ -11,11 +11,9 @@ type IGate interface {
 }
 
 type Gate struct {
-	inputs      []*Wire
-	outputs     []*Wire
-	Name        string
-	inputsNode  []IGate
-	outputsNode []IGate
+	Inputs  []*Wire
+	Outputs []*Wire
+	Name    string
 }
 
 func (p *Gate) Exec() {
@@ -27,11 +25,11 @@ func (p *Gate) GetName() string {
 }
 
 func (p *Gate) GetInputs() []*Wire {
-	return p.inputs
+	return p.Inputs
 }
 
 func (p *Gate) GetOutputs() []*Wire {
-	return p.outputs
+	return p.Outputs
 }
 
 func (p *Gate) SetName(name string) {
@@ -43,17 +41,17 @@ type IWireController interface {
 }
 
 func (p *Gate) ConnectInputs(register IWireController, wires ...string) {
-	p.inputs = make([]*Wire, len(wires))
+	p.Inputs = make([]*Wire, len(wires))
 	for i := range wires {
-		p.inputs[i] = register.GetWire(wires[i])
-		p.inputs[i].OutputsNode = append(p.inputs[i].OutputsNode, p)
+		p.Inputs[i] = register.GetWire(wires[i])
+		p.Inputs[i].OutputsNode = append(p.Inputs[i].OutputsNode, p)
 	}
 }
 
 func (p *Gate) ConnectOutputs(register IWireController, wires ...string) {
-	p.outputs = make([]*Wire, len(wires))
+	p.Outputs = make([]*Wire, len(wires))
 	for i := range wires {
-		p.outputs[i] = register.GetWire(wires[i])
-		p.outputs[i].InputNode = p
+		p.Outputs[i] = register.GetWire(wires[i])
+		p.Outputs[i].InputNode = p
 	}
 }

@@ -10,49 +10,51 @@ type Node1N struct{ Gate }
 type NodeN1 struct{ Gate }
 
 func (p *AndGate) Exec() {
-	if len(p.inputs) < 2 || len(p.outputs) < 1 {
+	if len(p.Inputs) < 2 || len(p.Outputs) < 1 {
 		return
 	}
-	p.outputs[0].Value = p.inputs[0].Value & p.inputs[1].Value
+	p.Outputs[0].Value = p.Inputs[0].Value & p.Inputs[1].Value
 }
 
 func (p *OrGate) Exec() {
-	if len(p.inputs) < 2 || len(p.outputs) < 1 {
+	if len(p.Inputs) < 2 || len(p.Outputs) < 1 {
 		return
 	}
-	p.outputs[0].Value = p.inputs[0].Value | p.inputs[1].Value
+	p.Outputs[0].Value = p.Inputs[0].Value | p.Inputs[1].Value
 }
 
 func (p *NotGate) Exec() {
-	if len(p.inputs) < 1 || len(p.outputs) < 1 {
+	if len(p.Inputs) < 1 || len(p.Outputs) < 1 {
 		return
 	}
-	p.outputs[0].Value = ^p.inputs[0].Value
+	p.Outputs[0].Value = ^p.Inputs[0].Value
 }
 
 func (p *XorGate) Exec() {
-	if len(p.inputs) < 2 || len(p.outputs) < 1 {
+	if len(p.Inputs) < 2 || len(p.Outputs) < 1 {
 		return
 	}
-	p.outputs[0].Value = (^p.inputs[0].Value & p.inputs[1].Value) |
-		(p.inputs[0].Value & ^p.inputs[1].Value)
+	p.Outputs[0].Value = (^p.Inputs[0].Value & p.Inputs[1].Value) |
+		(p.Inputs[0].Value & ^p.Inputs[1].Value)
 }
 
 func (p *Node1N) Exec() {
-	if len(p.inputs) < 1 || len(p.outputs) < 1 {
+	if len(p.Inputs) < 1 || len(p.Outputs) < 1 {
 		return
 	}
-	for i := range p.outputs {
-		p.outputs[i].Value = utils.GetBit(p.inputs[0].Value, i)
+	for i := len(p.Outputs) - 1; i >= 0; i-- {
+		p.Outputs[i].Value = utils.GetBit(p.Inputs[0].Value, i)
 	}
 }
 
 func (p *NodeN1) Exec() {
-	if len(p.inputs) < 1 || len(p.outputs) < 1 {
+	if len(p.Inputs) < 1 || len(p.Outputs) < 1 {
 		return
 	}
-	output := &p.outputs[0].Value
-	for i := range p.inputs {
-		utils.SetBit(output, i, p.inputs[i].Value)
+
+	output := &p.Outputs[0].Value
+
+	for i := len(p.Inputs) - 1; i >= 0; i-- {
+		utils.SetBit(output, i, p.Inputs[i].Value)
 	}
 }

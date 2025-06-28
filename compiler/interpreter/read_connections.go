@@ -6,15 +6,21 @@ type GateConnection struct {
 }
 
 func readConenctions(text string, i *int) (connections []GateConnection, ok bool) {
-
+	for get(text, i) == '\n' {
+		advance(i)
+	}
 	if get(text, i) != '[' {
 		ok = false
 		return
 	}
-
 	for {
 		if endLine(text, i) {
 			break
+		}
+		if get(text, i) != '[' {
+			ok = true
+			back(i)
+			return
 		}
 		inputs := readArray(text, i, "[]", ",")
 		nodeName := readString(text, i)
@@ -35,7 +41,6 @@ func readConenctions(text string, i *int) (connections []GateConnection, ok bool
 					Outputs:  outputs,
 					NodeName: nodeName,
 				})
-			advance(i)
 		}
 		advance(i)
 	}
