@@ -1,8 +1,13 @@
-package main
+package controllers
 
 import (
 	"strings"
 )
+
+type NodeConnection struct {
+	Inputs, Outputs []string
+	NodeName        string
+}
 
 func get(text string, i *int) byte {
 	if *i >= len(text) {
@@ -10,18 +15,22 @@ func get(text string, i *int) byte {
 	}
 	return text[*i]
 }
+
 func getS(text string, i *int) string {
 	if *i >= len(text) {
 		return ""
 	}
 	return string(text[*i])
 }
+
 func advance(i *int) {
 	(*i)++
 }
+
 func endLine(text string, i *int) bool {
 	return *i >= len(text)
 }
+
 func readArray(text string, i *int) (list []string) {
 	var value string
 	c := get(text, i)
@@ -50,6 +59,7 @@ func readArray(text string, i *int) (list []string) {
 	}
 	return
 }
+
 func readString(text string, i *int) string {
 	value := ""
 	for {
@@ -57,7 +67,7 @@ func readString(text string, i *int) string {
 			break
 		}
 		c := get(text, i)
-		if 'A' <= c && c <= 'Z' || 'a' <= c && c <= 'z' || '0' <= c && c <= '9' {
+		if 'A' <= c && c <= 'Z' || 'a' <= c && c <= 'z' || '0' <= c && c <= '9' || c == '_' {
 			value += getS(text, i)
 		} else {
 			break
@@ -66,16 +76,12 @@ func readString(text string, i *int) string {
 	}
 	return value
 }
+
 func processLine(text string, i *int) (inputs []string, outputs []string, nodeName string) {
 	inputs = readArray(text, i)
 	nodeName = readString(text, i)
 	outputs = readArray(text, i)
 	return
-}
-
-type NodeConnection struct {
-	inputs, outputs []string
-	nodeName        string
 }
 
 func processText(text string) []NodeConnection {
@@ -86,18 +92,18 @@ func processText(text string) []NodeConnection {
 		if endLine(text, &i) {
 			connections = append(connections,
 				NodeConnection{
-					inputs:   inputs,
-					outputs:  outputs,
-					nodeName: nodeName,
+					Inputs:   inputs,
+					Outputs:  outputs,
+					NodeName: nodeName,
 				})
 			break
 		}
 		if text[i] == '\n' {
 			connections = append(connections,
 				NodeConnection{
-					inputs:   inputs,
-					outputs:  outputs,
-					nodeName: nodeName,
+					Inputs:   inputs,
+					Outputs:  outputs,
+					NodeName: nodeName,
 				})
 			i++
 		}
