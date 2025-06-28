@@ -1,23 +1,24 @@
 package controllers
 
 import (
-	"main/structs"
+	"fmt"
+	"main/compiler/interpreter"
 	"maps"
 	"sort"
 )
 
 type GateController struct {
-	nodes          map[string]structs.IGate
-	compliledNodes []structs.IGate
+	nodes          map[string]IGate
+	compliledNodes []IGate
 }
 
 func NewGateController() *GateController {
 	return &GateController{
-		nodes: make(map[string]structs.IGate, 200),
+		nodes: make(map[string]IGate, 200),
 	}
 }
 
-func (nr *GateController) add(name string, node structs.IGate) {
+func (nr *GateController) add(name string, node IGate) {
 	if _, exists := nr.nodes[name]; exists {
 		return
 	}
@@ -30,22 +31,22 @@ func (nr *GateController) add(name string, node structs.IGate) {
 	nr.nodes[name] = node
 }
 
-func (nr *GateController) getGateByTag(name string) structs.IGate {
+func (nr *GateController) getGateByTag(name string) IGate {
 	switch name {
 	case "NOT":
-		return &structs.NotGate{}
+		return &NotGate{}
 	case "AND":
-		return &structs.AndGate{}
+		return &AndGate{}
 	case "OR":
-		return &structs.OrGate{}
+		return &OrGate{}
 	case "XOR":
-		return &structs.XorGate{}
+		return &XorGate{}
 	case "1N_":
-		return &structs.Node1N{}
+		return &Node1N{}
 	case "N1_":
-		return &structs.NodeN1{}
+		return &NodeN1{}
 	}
-	return &structs.Gate{}
+	return &Gate{}
 }
 
 func (nr *GateController) connect(wireRegister *WireController, name string, inputs []string, outputs []string) {
@@ -62,17 +63,21 @@ func (nr *GateController) connect(wireRegister *WireController, name string, inp
 }
 
 func (nr *GateController) ProcessText(wireRegister *WireController, text string) {
-	connections := processText(text)
+	/* connections := processText(text) */
 
-	for _, conn := range connections {
+	inter := interpreter.Interpreter{}
+	inter.ProcessText(text)
+	fmt.Println(inter.Connections,inter.NodesInfo)
+
+/* 	for _, conn := range connections {
 		wireRegister.Add(conn.Inputs...)
 		wireRegister.Add(conn.Outputs...)
 		nr.connect(wireRegister, conn.NodeName, conn.Inputs, conn.Outputs)
-	}
+	} */
 }
 
 // calcDistance calcula la distancia máxima desde un nodo hasta los nodos de entrada
-func calcDistance(node structs.IGate, depth int, visited map[string]bool) int {
+func calcDistance(node IGate, depth int, visited map[string]bool) int {
 	if visited == nil {
 		visited = make(map[string]bool)
 	}
@@ -116,7 +121,7 @@ func (nr *GateController) Exec(wireRegister *WireController) {
 	// Crear una lista de nodos ordenados por distancia (de mayor a menor)
 	type nodeWithDistance struct {
 		name     string
-		node     structs.IGate
+		node     IGate
 		distance int
 	}
 

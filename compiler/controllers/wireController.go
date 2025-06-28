@@ -1,23 +1,19 @@
 package controllers
 
-import (
-	"main/structs"
-)
-
 type WireController struct {
-	Wires map[string]*structs.Wire
+	Wires map[string]*Wire
 }
 
 func NewWireController() *WireController {
 	return &WireController{
-		Wires: make(map[string]*structs.Wire, 200),
+		Wires: make(map[string]*Wire, 200),
 	}
 }
 
 func (wr *WireController) Add(names ...string) {
 	for _, name := range names {
 		if wr.Wires[name] == nil {
-			wr.Wires[name] = &structs.Wire{
+			wr.Wires[name] = &Wire{
 				Value: 0,
 				Name:  name,
 			}
@@ -38,6 +34,6 @@ func (wr *WireController) Get(name string) int {
 	return 0
 }
 
-func (wr *WireController) GetWire(name string) *structs.Wire {
+func (wr *WireController) GetWire(name string) *Wire {
 	return wr.Wires[name]
 }
